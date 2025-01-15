@@ -1,4 +1,6 @@
-// import connect from '../connect/connect.js'; 
+import connect from '../connect/connect.js'; 
+// import Lessons from './showu/lessonsSchema.js';
+import TeamMatching from './showu/teamMatchingSchema.js';
 // import Option from './shop/optionSchema.js'
 // import Md from './shop/mdSchema.js';
 // import Auction from './shop/auctionSchema.js'
@@ -22,7 +24,164 @@
 // import AuditionInfo from './community/auditionInfoSchema.js';
 // import vodShowuVideo from './vod/vodShowuVideo.js';
 
-// connect()
+connect()
+
+// teamLeader : { type : Schema.Types.ObjectId, ref : 'User' },
+//     members : { type : Schema.Types.ObjectId, ref : 'User' },
+//     teamName: { type: String, required: true },
+//     categoty : { type : String },
+//     teamPhoto : { type : String },
+//     teamTitle : { type : String },
+//     teamIntro : { type : String, required : true },
+//     portfilo : { type : Schema.Types.ObjectId, ref : 'Upgrade' },
+//     activityPeriod : {
+//       start : { type : String, required : true }, //팀 활동 시작일
+//       end : { type : String, required : true }, //팀 활동 종료일
+//     },
+//     career : { type : String },
+//     status: { type: String, enum: ['매칭 완료', '매칭 대기'], default: '매칭 대기' }, //팀 매칭 승인 상태
+//     recruit : { type : Number },
+//     likeCount: { type: Number, default: 0 },
+//     likedUsers: [{type: Schema.Types.ObjectId, ref : 'User'}],
+
+const teamData = await TeamMatching.create(
+    { 
+      teamLeader: "6781db04d257b9e8dc7ef6dc",  // 홍길동
+      members: ['677e630231528699284ac4cc', '677e6de746473044499cf565'], //aaa, bbb
+      teamName: "감정의 연출자들",
+      category: "6781db5cd257b9e8dc7ef6ec", //홍길동
+      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      teamTitle: "실감나는 연기를 위한 팀",
+      teamIntro: 
+        "연기에 열정을 가진 분들과 함께 캐릭터 해석과 감정 표현을 깊이 있게 연구하고 연습합니다. 함께 무대 경험을 쌓고 성장해 나가요!",
+      portfilo: "6781db5cd257b9e8dc7ef6ec",
+      activityPeriod: {
+        start: "2025-02-01",
+        end: "2025-08-31"
+      },
+      career: "6781db5cd257b9e8dc7ef6ec",
+      status: "매칭 대기",
+      recruit: 5,
+      likeCount: 1,
+      likedUsers: ["677e630231528699284ac4cc", "677e6de746473044499cf565"] //aaa, bbb
+    },
+    {
+      teamLeader: "677fa90350de928e988ab04b", //ccc
+      members: ["64a1f0b2c2f94a001fc78907", "64a1f0b2c2f94a001fc78908"],
+      teamName: "마법의 손길",
+      category: "6781db5cd257b9e8dc7ef6ec", // ccc
+      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      teamTitle: "마술의 매력을 전하는 팀",
+      teamIntro: 
+        "관객을 놀라게 할 마술 공연을 함께 준비하고, 새로운 트릭과 퍼포먼스를 연구하며 마술의 세계를 넓혀갑니다!",
+      portfilo: "6781db5cd257b9e8dc7ef6ec",
+      activityPeriod: {
+        start: "2025-03-01",
+        end: "2025-09-30"
+      },
+      career: "6781db5cd257b9e8dc7ef6ec",
+      status: "매칭 대기",
+      recruit: 3,
+      likeCount: 1,
+      likedUsers: ["67814840c3ba2e68c7a6dc9e"] //ddd
+    },
+    {
+      teamLeader: "6781dc07d257b9e8dc7ef725", //eee
+      members: ["678513696b27c1ae552cd4ab"], //fff
+      teamName: "음악의 향연",
+      category: "6781dc32d257b9e8dc7ef72b", // eee
+      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      teamTitle: "음악으로 하나 되는 팀",
+      teamIntro: 
+        "다양한 장르의 음악을 연주하며 소통과 협업을 경험합니다. 음악에 대한 열정을 가진 사람들과 함께 멋진 공연을 만들어가요!",
+      portfilo: "6781dc32d257b9e8dc7ef72b",
+      activityPeriod: {
+        start: "2025-01-15",
+        end: "2025-07-15"
+      },
+      career: "6781dc32d257b9e8dc7ef72b",
+      status: "매칭 대기",
+      recruit: 4,
+      likeCount: 1,
+      likedUsers: ["67814840c3ba2e68c7a6dc9e"]
+    }  
+)
+
+
+
+// const lessonData = await Lessons.create(
+//   {
+//     createdUser : "6781db04d257b9e8dc7ef6dc", //홍길동
+//     lessonTitle: "뮤지컬 배우가 말하는 음악과 뮤지컬",
+//     lessonIntro: 
+//       "뮤지컬 속 음악은 단순한 멜로디 그 이상입니다. 음악은 캐릭터의 감정과 이야기를 전달하는 강력한 도구입니다. 이 레슨에서는 뮤지컬 배우의 경험을 바탕으로, 음악을 통해 캐릭터의 내면을 표현하고 무대 위에서 감동을 선사하는 법을 배웁니다. 노래와 연기의 조화를 통해 뮤지컬이라는 장르의 매력을 깊이 이해할 수 있습니다.",
+//     recommend: [
+//       "뮤지컬 캐릭터의 해석, 감정 표현, 보컬 기술에 대해서 알고싶은 분",
+//       "표현력, 자신감, 창의력을 키우고 싶은 분"
+//     ],
+//     lessonPhoto : "images/showu/lesson/acting-1.png",
+//     lessonVodUrl : "/video/lesson/acting-1",
+//     portfilo : "6781db5cd257b9e8dc7ef6ec", //홍길동
+//     category : "6781db5cd257b9e8dc7ef6ec",
+//     career : "6781db5cd257b9e8dc7ef6ec",
+//     likeCount : 2,
+//     likedUsers : ["677e6de746473044499cf565", "677e630231528699284ac4cc"] //bbb, aaa
+//   },
+//   {
+//     createdUser : "677fa90350de928e988ab04b", //ccc
+//     lessonTitle: "연기의 기술: 감정을 전달하는 예술",
+//     lessonIntro: 
+//       "연기는 단순히 대사를 외우는 것이 아니라, 캐릭터의 삶을 이해하고 그 감정을 몸과 목소리로 표현하는 예술입니다. 이 레슨에서는 무대 위에서 자연스럽고 진정성 있는 연기를 선보이는 기술을 배웁니다. 감정의 전달과 캐릭터 분석, 그리고 몰입 연기법을 통해 배우로서 한 단계 성장할 수 있는 기회를 제공합니다.",
+//     recommend: [
+//       "무대 위에서 자연스러운 감정 표현을 배우고 싶은 분",
+//       "캐릭터에 몰입하는 연기 기술을 연마하고 싶은 분"
+//     ],
+//     lessonPhoto : "images/showu/lesson/acting.png",
+//     lessonVodUrl : "/video/lesson/acting",
+//     portfilo : "6781db04d257b9e8dc7ef6dc", //ccc
+//     category : "6781db04d257b9e8dc7ef6dc",
+//     career : "6781db04d257b9e8dc7ef6dc",
+//     likeCount : 1,
+//     likedUsers : ["677e6de746473044499cf565"] //bbb
+//   },
+//   {
+//     createdUser : "67814840c3ba2e68c7a6dc9e", //ddd
+//     lessonTitle: "음악으로 전하는 감동: 보컬과 연주의 비밀",
+//     lessonIntro: 
+//       "음악은 단순한 소리가 아니라, 사람들의 마음을 울리는 힘을 가지고 있습니다. 이 레슨에서는 보컬 퍼포먼스와 악기 연주를 통해 감정을 표현하고, 음악을 통해 관객에게 메시지를 전달하는 방법을 배웁니다. 정확한 테크닉뿐 아니라, 음악 속에 담긴 스토리와 감동을 이해하고 표현하는 법을 학습합니다.",
+//     recommend: [
+//       "보컬 퍼포먼스와 연주 실력을 향상시키고 싶은 분",
+//       "음악을 통해 감정을 효과적으로 전달하는 법을 배우고 싶은 분"
+//     ],
+//     lessonPhoto : "images/showu/lesson/piano.png",
+//     lessonVodUrl : "/video/lesson/piano",
+//     portfilo : "6781db7ed257b9e8dc7ef6f4", //ddd
+//     category : "6781db7ed257b9e8dc7ef6f4",
+//     career : "6781db7ed257b9e8dc7ef6f4",
+//     likeCount : 1,
+//     likedUsers : ["677e6de746473044499cf565"] //bbb
+//   },
+//   {
+//     createdUser : "678513696b27c1ae552cd4ab", //fff
+//     lessonTitle: "마술의 세계: 눈과 마음을 사로잡는 퍼포먼스",
+//     lessonIntro: 
+//       "마술은 환상과 현실의 경계를 넘나드는 매혹적인 예술입니다. 이 레슨에서는 관객의 시선을 사로잡는 마술 테크닉과 공연 연출법을 배웁니다. 마술 동작의 기술적인 완성도뿐 아니라, 스토리텔링과 퍼포먼스를 통해 관객과 교감하는 법도 익힙니다. 당신의 무대를 더욱 매력적으로 만들어 줄 특별한 마술의 세계로 초대합니다.",
+//     recommend: [
+//       "관객을 매료시키는 퍼포먼스 기술을 배우고 싶은 분",
+//       "마술을 통해 창의적인 무대를 연출하고 싶은 분"
+//     ],
+//     lessonPhoto : "images/showu/lesson/magic-1.png",
+//     lessonVodUrl : "/video/lesson/magic-1",
+//     portfilo : "678513946b27c1ae552cd4b1", //fff
+//     category : "678513946b27c1ae552cd4b1",
+//     career : "678513946b27c1ae552cd4b1",
+//     likeCount : 1,
+//     likedUsers : ["6781dc07d257b9e8dc7ef725"] //eee
+//   },
+// )
+
+
+
 
 // // await .deleteMany()
 
@@ -6263,3 +6422,4 @@
 // // console.log(mdCartData)
 // // console.log(ticketEventData)
 // // console.log(auditionInfoData)
+
