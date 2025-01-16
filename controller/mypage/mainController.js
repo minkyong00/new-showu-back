@@ -14,8 +14,8 @@ const getMainLesson = async (req, res) => {
 
     // Lesson에 Upgrade 정보 추가
     const enrichedLessons = foundLesson.map(lesson => {
-      const userInfo = foundUser.find(user => user.exportName.toString() === lesson.userId.toString());
-      const userName = foundUserName.find(user => user._id.toString() === lesson.userId.toString());
+      const userInfo = foundUser.find(user => user.exportName?.toString() === lesson.userId?.toString());
+      const userName = foundUserName.find(user => user._id?.toString() === lesson.userId?.toString());
       // 사용자 정보를 lesson에 추가
       return {
         ...lesson,
