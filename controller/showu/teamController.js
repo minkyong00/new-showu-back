@@ -36,4 +36,30 @@ const getTeamList = async (req, res) => {
     }
 }
 
-export { getTeamList }
+const getTeamDetail = async (req, res) => {
+    const { id } = req.params;
+    console.log("id", id)
+
+    try {
+        const teamList = await TeamMatching.find({ _id : id })
+            .populate("teamLeader")
+            .populate("portfilo")
+            .lean();
+
+        console.log("teamList : ", teamList)
+
+        res.status(200).json({
+            teamDetailSuccess : true,
+            message : "팀매칭 상세 페이지를 성공적으로 가져왔습니다.",
+            teamList : teamList
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            teamDetailSuccess : false,
+            message : "팀매칭 상세 페이지를 가져오는데 실패했습니다",
+        })
+    }
+}
+
+export { getTeamList, getTeamDetail }
