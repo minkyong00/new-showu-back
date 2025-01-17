@@ -3,7 +3,7 @@ import User from "../../models/users/userSchema.js";
 
 const getTeamList = async (req, res) => {
     try {
-        const foundTeam = await TeamMatching.find({}).lean();
+        const foundTeam = await TeamMatching.find({}).populate("portfilo").lean();
         const foundUserName = await User.find({}).lean();
 
         console.log("foundTeam", foundTeam);

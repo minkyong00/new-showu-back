@@ -46,20 +46,20 @@ connect()
 
 const teamData = await TeamMatching.create(
     { 
-      teamLeader: "6781db04d257b9e8dc7ef6dc",  // 홍길동
+      teamLeader: "677630ae686ab95419a5a1dc",  // 홍길동
       members: ['677e630231528699284ac4cc', '677e6de746473044499cf565'], //aaa, bbb
       teamName: "감정의 연출자들",
-      category: "6781db5cd257b9e8dc7ef6ec", //홍길동
-      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      category: "6781db04d257b9e8dc7ef6dc", //홍길동
+      teamProfilo: "/images/showu/team/teamProfilo.png",
       teamTitle: "실감나는 연기를 위한 팀",
       teamIntro: 
         "연기에 열정을 가진 분들과 함께 캐릭터 해석과 감정 표현을 깊이 있게 연구하고 연습합니다. 함께 무대 경험을 쌓고 성장해 나가요!",
-      portfilo: "6781db5cd257b9e8dc7ef6ec",
+      portfilo: "6781db04d257b9e8dc7ef6dc",
       activityPeriod: {
         start: "2025-02-01",
         end: "2025-08-31"
       },
-      career: "6781db5cd257b9e8dc7ef6ec",
+      career: "6781db04d257b9e8dc7ef6dc",
       status: "매칭 대기",
       recruit: 5,
       likeCount: 1,
@@ -70,7 +70,7 @@ const teamData = await TeamMatching.create(
       members: ["64a1f0b2c2f94a001fc78907", "64a1f0b2c2f94a001fc78908"],
       teamName: "마법의 손길",
       category: "6781db5cd257b9e8dc7ef6ec", // ccc
-      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      teamProfilo: "/images/showu/team/teamProfilo.png",
       teamTitle: "마술의 매력을 전하는 팀",
       teamIntro: 
         "관객을 놀라게 할 마술 공연을 함께 준비하고, 새로운 트릭과 퍼포먼스를 연구하며 마술의 세계를 넓혀갑니다!",
@@ -90,7 +90,7 @@ const teamData = await TeamMatching.create(
       members: ["678513696b27c1ae552cd4ab"], //fff
       teamName: "음악의 향연",
       category: "6781dc32d257b9e8dc7ef72b", // eee
-      teamProfilo: "uploads/showu/team/teamProfilo.png",
+      teamProfilo: "/images/showu/team/teamProfilo.png",
       teamTitle: "음악으로 하나 되는 팀",
       teamIntro: 
         "다양한 장르의 음악을 연주하며 소통과 협업을 경험합니다. 음악에 대한 열정을 가진 사람들과 함께 멋진 공연을 만들어가요!",
