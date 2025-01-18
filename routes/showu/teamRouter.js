@@ -55,7 +55,11 @@ const upload = multer({
 })
 
 const teamRouter = express.Router();
-const TeamFileUploadMiddleWare = upload.single('file');
+// const TeamFileUploadMiddleWare = upload.single('file');
+const TeamFileUploadMiddleWare = upload.fields([
+  { name : "file", maxCount : 1 }, //포트폴리오
+  { name : "teamProfile", maxCount : 1}, //팀 프로필 이미지
+]);
 
 createUploadFolder(path.join(__dirname, "../../uploads/showu/create"));
 

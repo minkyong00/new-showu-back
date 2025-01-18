@@ -4,7 +4,7 @@ import path from 'path';
 
 const getTeamList = async (req, res) => {
     try {
-        const foundTeam = await TeamMatching.find({}).populate("portfilo").lean();
+        const foundTeam = await TeamMatching.find({}).populate("file").lean();
         const foundUserName = await User.find({}).lean();
 
         console.log("foundTeam", foundTeam);
@@ -44,7 +44,7 @@ const getTeamDetail = async (req, res) => {
     try {
         const teamList = await TeamMatching.find({ _id : id })
             .populate("teamLeader")
-            .populate("portfilo")
+            // .populate("")
             .lean();
 
         console.log("teamList : ", teamList)
@@ -52,7 +52,7 @@ const getTeamDetail = async (req, res) => {
         res.status(200).json({
             teamDetailSuccess : true,
             message : "팀매칭 상세 페이지를 성공적으로 가져왔습니다.",
-            teamList : teamList
+            teamList : teamList,
         })
 
     } catch (error) {
@@ -66,7 +66,7 @@ const getTeamDetail = async (req, res) => {
 const teamCreate = async (req, res) => {
     const userId = req.user._id;
     // console.log("userId", userId)
-    const { teamName, categoty, teamTitle, teamIntro, activityPeriodStart, deadLine,career, recruit } = req.body;
+    const { teamName, categoty, teamTitle, teamIntro, activityPeriodStart, deadLine, careerHistory, recruit, area } = req.body;
 
     const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
     console.log("foudnUser", foundUser)
@@ -78,10 +78,24 @@ const teamCreate = async (req, res) => {
     //     });
     // }
     
+    // console.log("req.files", req.file)
+    // const relativePath = path.join(uploadFolder, req.file.filename).replaceAll("\\", "/")
+    // console.log("relativePath", relativePath)
+    
         const uploadFolder = "uploads/showu/create";
-        console.log("req.files", req.file)
-        const relativePath = path.join(uploadFolder, req.file.filename).replaceAll("\\", "/")
-        console.log("relativePath", relativePath)
+        const filePaths = {}; // 파일 경로 저장
+
+        if (req.files) {
+        if (req.files.file) {
+            const portfolioPath = path.join(uploadFolder, req.files.file[0].filename).replaceAll("\\", "/");
+            filePaths.file = `/${portfolioPath}`;
+        }
+
+        if (req.files.teamProfile) {
+            const profilePath = path.join(uploadFolder, req.files.teamProfile[0].filename).replaceAll("\\", "/");
+            filePaths.teamProfile = `/${profilePath}`;
+        }
+        }
 
         const createTeam = await TeamMatching.create({
             teamLeader : userId,
@@ -89,11 +103,13 @@ const teamCreate = async (req, res) => {
             categoty : categoty,
             teamTitle : teamTitle,
             teamIntro : teamIntro,
-            file : relativePath,
+            file : filePaths.file || null,
+            teamProfile : filePaths.teamProfile || null,
             activityPeriodStart : activityPeriodStart,
             deadLine : deadLine,
-            career : career,
-            recruit : recruit
+            careerHistory : careerHistory,
+            recruit : recruit,
+            area : area
         })
 
         console.log("createTeam", createTeam)
@@ -102,7 +118,8 @@ const teamCreate = async (req, res) => {
             teamCreateSuccess : true,
             message : "팀 개설이 완료되었습니다.",
             createTeamList : createTeam,
-            filePath : `/${relativePath}`
+            filePath : filePaths.file,
+            profileFilePath : filePaths.teamProfile
         })
         // res.status(400).json({
         //     teamCreateSuccess : false,
