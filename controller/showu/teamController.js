@@ -63,24 +63,13 @@ const getTeamDetail = async (req, res) => {
     }
 }
 
-const teamCreate = async (req, res) => {
-    const userId = req.user._id;
-    // console.log("userId", userId)
-    const { teamName, categoty, teamTitle, teamIntro, activityPeriodStart, deadLine, careerHistory, recruit, area } = req.body;
+    const teamCreate = async (req, res) => {
+        const userId = req.user._id;
+        // console.log("userId", userId)
+        const { teamName, category, teamTitle, teamIntro, activityPeriodStart, deadLine, careerHistory, recruit, area } = req.body;
 
-    const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
-    console.log("foudnUser", foundUser)
-
-    // if (!req.file) {
-    //     return res.status(400).json({
-    //         teamCreateSuccess: false,
-    //         message: "파일이 업로드되지 않았습니다.",
-    //     });
-    // }
-    
-    // console.log("req.files", req.file)
-    // const relativePath = path.join(uploadFolder, req.file.filename).replaceAll("\\", "/")
-    // console.log("relativePath", relativePath)
+        const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
+        console.log("foudnUser", foundUser)
     
         const uploadFolder = "uploads/showu/create";
         const filePaths = {}; // 파일 경로 저장
@@ -100,7 +89,7 @@ const teamCreate = async (req, res) => {
         const createTeam = await TeamMatching.create({
             teamLeader : userId,
             teamName : teamName,
-            categoty : categoty,
+            category : category,
             teamTitle : teamTitle,
             teamIntro : teamIntro,
             file : filePaths.file || null,

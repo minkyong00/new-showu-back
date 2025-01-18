@@ -4,9 +4,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getTeamDetail, getTeamList, teamCreate } from '../../controller/showu/teamController.js';
-import applyRouter from './applyRouter.js';
-
+import { applyCreate } from '../../controller/showu/teamApplyController.js';
 
 // ES Modules에서 __dirname 설정
 const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +18,7 @@ const createUploadFolder = (folderPath) => {
 };
 
 // 파일 이름 중복 처리
-const uploadFolder = "uploads/team/create"
+const uploadFolder = "uploads/team/apply"
 const getUniqueFileName = (originalName, uploadFolder) => {
   const ext = path.extname(originalName); //확장자를 추출
   const baseName = path.basename(originalName, ext) //확장자를 제외한 파일 이름
@@ -39,7 +37,7 @@ const upload = multer({
   storage : multer.diskStorage({
     destination(req, file, done){
       console.log(req.path)
-      const uploadPath = path.join(__dirname, "../../uploads/showu/create");
+      const uploadPath = path.join(__dirname, "../../uploads/showu/apply");
       console.log(`Saving file to: ${uploadPath}`);
       done(null, uploadPath) // 이미지 저장 경로 설정
     },
@@ -55,25 +53,16 @@ const upload = multer({
   },
 })
 
-const teamRouter = express.Router();
-// const TeamFileUploadMiddleWare = upload.single('file');
-const TeamFileUploadMiddleWare = upload.fields([
-  { name : "file", maxCount : 1 }, //포트폴리오
-  { name : "teamProfile", maxCount : 1}, //팀 프로필 이미지
-]);
+const applyRouter = express.Router();
+const TeamApplyFileUploadMiddleWare = upload.single('portfilo');
+// const TeamFileUploadMiddleWare = upload.fields([
+//   { name : "file", maxCount : 1 }, //포트폴리오
+//   { name : "teamProfile", maxCount : 1}, //팀 프로필 이미지
+// ]);
 
-createUploadFolder(path.join(__dirname, "../../uploads/showu/create"));
+createUploadFolder(path.join(__dirname, "../../uploads/showu/apply"));
 
-// 팀 매칭 메인 데이터 "/showu/team"
-teamRouter.get("/", getTeamList)
+// 팀 매칭 지원 'showu/team/apply/create/:id'
+applyRouter.post("/create/:id", passport.authenticate('jwt', { session : false }), TeamApplyFileUploadMiddleWare, applyCreate)
 
-// 팀 매칭 상세 페이지 '/showu/team/detail/:id
-teamRouter.get("/detail/:id", getTeamDetail)
-
-// 팀 매칭 팀 개설 페이지 '/showu/team/create'
-teamRouter.post("/create", passport.authenticate('jwt', { session : false }), TeamFileUploadMiddleWare, teamCreate)
-
-// 팀 매칭 지원 라우터
-teamRouter.use("/apply", applyRouter)
-
-export default teamRouter;
+export default applyRouter;
