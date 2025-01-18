@@ -1,5 +1,6 @@
 import TeamMatching from "../../models/showu/teamMatchingSchema.js";
 import User from "../../models/users/userSchema.js";
+import path from 'path';
 
 const getTeamList = async (req, res) => {
     try {
@@ -62,4 +63,51 @@ const getTeamDetail = async (req, res) => {
     }
 }
 
-export { getTeamList, getTeamDetail }
+const teamCreate = async (req, res) => {
+    const userId = req.user._id;
+    // console.log("userId", userId)
+    const { teamName, categoty, teamTitle, teamIntro, activityPeriodStart, deadLine,career, recruit } = req.body;
+
+    const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
+    console.log("foudnUser", foundUser)
+
+    // if (!req.file) {
+    //     return res.status(400).json({
+    //         teamCreateSuccess: false,
+    //         message: "파일이 업로드되지 않았습니다.",
+    //     });
+    // }
+    
+        const uploadFolder = "uploads/showu/create";
+        console.log("req.files", req.file)
+        const relativePath = path.join(uploadFolder, req.file.filename).replaceAll("\\", "/")
+        console.log("relativePath", relativePath)
+
+        const createTeam = await TeamMatching.create({
+            teamLeader : userId,
+            teamName : teamName,
+            categoty : categoty,
+            teamTitle : teamTitle,
+            teamIntro : teamIntro,
+            file : relativePath,
+            activityPeriodStart : activityPeriodStart,
+            deadLine : deadLine,
+            career : career,
+            recruit : recruit
+        })
+
+        console.log("createTeam", createTeam)
+
+        res.status(200).json({
+            teamCreateSuccess : true,
+            message : "팀 개설이 완료되었습니다.",
+            createTeamList : createTeam,
+            filePath : `/${relativePath}`
+        })
+        // res.status(400).json({
+        //     teamCreateSuccess : false,
+        //     message : "팀 개설를 하는 도중 오류가 발생했습니다.",
+        // })
+    }
+
+export { getTeamList, getTeamDetail, teamCreate }
