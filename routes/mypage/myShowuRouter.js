@@ -23,6 +23,6 @@ myShowuRouter.get("/managment/:id", getManagmentDetail)
 myShowuRouter.put("/request-status/approve", requestStatusApprove)
 
 // 팀원 거절 '/my/showu/request-status/reject'
-myShowuRouter.put('/my/showu/request-status/reject', requestStatusReject)
+myShowuRouter.put('/request-status/reject', requestStatusReject)
 
 export default myShowuRouter

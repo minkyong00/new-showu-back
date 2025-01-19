@@ -63,57 +63,68 @@ const getTeamDetail = async (req, res) => {
     }
 }
 
-    const teamCreate = async (req, res) => {
-        const userId = req.user._id;
-        // console.log("userId", userId)
-        const { teamName, category, teamTitle, teamIntro, activityPeriodStart, deadLine, careerHistory, recruit, area } = req.body;
+const teamCreate = async (req, res) => {
+    const userId = req.user._id;
+    // console.log("userId", userId)
+    const userRole = req.user.role;
+    console.log("userRole", userRole);
 
-        const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
-        console.log("foudnUser", foundUser)
-    
-        const uploadFolder = "uploads/showu/create";
-        const filePaths = {}; // 파일 경로 저장
-
-        if (req.files) {
-        if (req.files.file) {
-            const portfolioPath = path.join(uploadFolder, req.files.file[0].filename).replaceAll("\\", "/");
-            filePaths.file = `/${portfolioPath}`;
-        }
-
-        if (req.files.teamProfile) {
-            const profilePath = path.join(uploadFolder, req.files.teamProfile[0].filename).replaceAll("\\", "/");
-            filePaths.teamProfile = `/${profilePath}`;
-        }
-        }
-
-        const createTeam = await TeamMatching.create({
-            teamLeader : userId,
-            teamName : teamName,
-            category : category,
-            teamTitle : teamTitle,
-            teamIntro : teamIntro,
-            file : filePaths.file || null,
-            teamProfile : filePaths.teamProfile || null,
-            activityPeriodStart : activityPeriodStart,
-            deadLine : deadLine,
-            careerHistory : careerHistory,
-            recruit : recruit,
-            area : area
-        })
-
-        console.log("createTeam", createTeam)
-
-        res.status(200).json({
-            teamCreateSuccess : true,
-            message : "팀 개설이 완료되었습니다.",
-            createTeamList : createTeam,
-            filePath : filePaths.file,
-            profileFilePath : filePaths.teamProfile
-        })
-        // res.status(400).json({
-        //     teamCreateSuccess : false,
-        //     message : "팀 개설를 하는 도중 오류가 발생했습니다.",
-        // })
+    // role이 export가 아닌 경우 요청 차단
+    if (userRole !== "export") {
+        return res.status(403).json({
+        teamCreateSuccess: false,
+        message: "팀 개설 권한이 없습니다. 등급이 'export'여야 합니다.",
+        });
     }
+
+    const { teamName, category, teamTitle, teamIntro, activityPeriodStart, deadLine, careerHistory, recruit, area } = req.body;
+
+    const foundUser = await TeamMatching.findOne({ teamLeader : userId }).lean();
+    console.log("foudnUser", foundUser)
+
+    const uploadFolder = "uploads/showu/create";
+    const filePaths = {}; // 파일 경로 저장
+
+    if (req.files) {
+    if (req.files.file) {
+        const portfolioPath = path.join(uploadFolder, req.files.file[0].filename).replaceAll("\\", "/");
+        filePaths.file = `/${portfolioPath}`;
+    }
+
+    if (req.files.teamProfile) {
+        const profilePath = path.join(uploadFolder, req.files.teamProfile[0].filename).replaceAll("\\", "/");
+        filePaths.teamProfile = `/${profilePath}`;
+    }
+    }
+
+    const createTeam = await TeamMatching.create({
+        teamLeader : userId,
+        teamName : teamName,
+        category : category,
+        teamTitle : teamTitle,
+        teamIntro : teamIntro,
+        file : filePaths.file || null,
+        teamProfile : filePaths.teamProfile || null,
+        activityPeriodStart : activityPeriodStart,
+        deadLine : deadLine,
+        careerHistory : careerHistory,
+        recruit : recruit,
+        area : area
+    })
+
+    console.log("createTeam", createTeam)
+
+    res.status(200).json({
+        teamCreateSuccess : true,
+        message : "팀 개설이 완료되었습니다.",
+        createTeamList : createTeam,
+        filePath : filePaths.file,
+        profileFilePath : filePaths.teamProfile
+    })
+    // res.status(400).json({
+    //     teamCreateSuccess : false,
+    //     message : "팀 개설를 하는 도중 오류가 발생했습니다.",
+    // })
+}
 
 export { getTeamList, getTeamDetail, teamCreate }

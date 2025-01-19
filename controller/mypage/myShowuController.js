@@ -208,7 +208,7 @@ const requestStatusApprove = async (req, res) => {
       { _id : user.teamId._id },
       {
         $addToSet: { members: user.applyId._id },
-        $set: { status: status }
+        // $set: { status: status }
       }
     )
 
@@ -230,7 +230,57 @@ const requestStatusApprove = async (req, res) => {
 }
 
 const requestStatusReject = async (req, res) => {
+  try {
+    //지원한 유저 아이디
+    const { userId, teamId, status, isApplyStatus, applyStatus } = req.body; 
+    console.log("req.body", req.body)
+    
+    if(!userId) {
+      return res.status(400).json({ message : "userId가 제공되지 않았습니다."})
+    }
 
+    // 지원한 유저
+    const user = await TeamApply.findOne({ applyId : userId, teamId : teamId })
+      .populate("teamId")
+      .populate("applyId")
+      .lean();
+    console.log("팀 지원한 유저 정보:", user)
+
+    if(!user){
+      return res.status(400).json({ message : "유저를 찾을 수 없습니다."})
+    }
+
+    await TeamApply.updateOne(
+      { _id: user._id },
+      {
+        isApplyStatus : isApplyStatus,
+        applyStatus : applyStatus
+      }
+    )
+
+    await TeamMatching.updateOne(
+      { _id : user.teamId._id },
+      {
+        $addToSet: { members: user.applyId._id },
+        // $set: { status: status }
+      }
+    )
+
+    await TeamMembers.deleteOne({
+      teamId : user.teamId._id,
+      userId : user.applyId,
+      applyId : user._id
+    })
+
+    res.status(200).json({
+      message : "팀 지원 멤버를 거절하였습니다.",
+      user : user
+    })
+
+  } catch (error) {
+    console.error("팀 지원 멤버 거절 중 오류가 발생했습니다.", error)
+    res.status(500).json({ message : "서버 오류"})
+  }
 }
 
 export { getMyTeamMatching, getMyLesson, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject }

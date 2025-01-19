@@ -12,13 +12,20 @@ const applyCreate = async (req, res) => {
   const foundTeam = await TeamMatching.findOne({ _id : id }).lean();
   const foundUpgrade = await Upgrade.findOne({ exportName : userId }).lean();
 
+  const existingApply = await TeamApply.findOne({ teamId : id, applyId: userId }).lean();
+  console.log("existingApply", existingApply)
+
+  if(existingApply){
+    return res.status(400).json({ message : "이미 이 팀에 지원하셨습니다."})
+  }
+
   if(!foundUpgrade){
-    return res.status(400).json({ message : "이미 팀 지원을 했습니다. 한번만 가능합니다" })
+    return res.status(400).json({ message : "등급업 신청 후 팀에 지원이 가능합니다"})
   }
 
   // console.log("foundUser", foundUser)
-  console.log("foundTeam", foundTeam)
-  console.log("foundUpgrade", foundUpgrade)
+  // console.log("foundTeam", foundTeam)
+  // console.log("foundUpgrade", foundUpgrade)
 
   const uploadFolder = "uploads/showu/apply";
   console.log("req.files", req.file)
