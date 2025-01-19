@@ -3,7 +3,7 @@ import { getCurrentTime } from "../../utils/utils.js";
 
 const teamMatchingSchema = new Schema({
     teamLeader : { type : Schema.Types.ObjectId, ref : 'User' }, // 팀 개설 유저
-    members : [{ type : Schema.Types.ObjectId, ref : 'TeamMembers' }], // 팀원
+    members : [{ type : Schema.Types.ObjectId, ref : 'User' }], // 팀원
     teamName: { type: String, required: true },
     categoty : { type : String }, // 분야
     teamTitle : { type : String },

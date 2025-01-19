@@ -1,5 +1,8 @@
 import LessonResevation from "../../models/showu/lessonReservationSchema.js";
 import Lesson from "../../models/showu/lessonSchema.js";
+import TeamApply from "../../models/showu/teamApplySchema.js";
+import TeamMatching from "../../models/showu/teamMatchingSchema.js";
+import TeamMembers from "../../models/showu/teamMembersSchema.js";
 import Team from "../../models/showu/teamSchema.js";
 
 const getMyTeamMatching = async (req, res) => {
@@ -117,7 +120,120 @@ const getlessonreservation = async (req, res) => {
   }
 }
 
-export { getMyTeamMatching, getMyLesson, getlessonreservation }
+const getTeamMatchingManagment = async (req, res) => {
+  const userId = req.user._id;
+  console.log("userId", userId)
+
+  try {
+    const teamMatchingList = await TeamMatching.find({ teamLeader : userId }).lean();
+    console.log("teamMatchingList", teamMatchingList)
+    const teamId = await teamMatchingList.map(team => team._id);
+    console.log("teamId", teamId)
+  
+    const managmentList = await TeamApply.find({ teamId : teamId })
+      .populate("teamId")
+      .populate("applyId")
+      .lean();
+    console.log("managmentList", managmentList)
+
+    return res.status(200).json({
+      teamManagmentSuccess : true,
+      message : "성공적으로 팀 지원 목록을 가져왔습니다.",
+      managmentList : managmentList
+    })
+    
+  } catch (error) {
+    return res.status(400).json({
+      teamManagmentSuccess : false,
+      message : "팀 지원 목록을 가져오는데 실패했습니다.",
+    })
+  }
+
+}
+
+const getManagmentDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const foundManagmentDeatil = await TeamApply.findById(id)
+      .populate("teamId")
+      .populate("applyId")
+      .lean();
+    console.log("foundManagmentDetail", foundManagmentDeatil)
+
+    if(!foundManagmentDeatil){
+      return res.status(404).json({ message: "팀 지원 정보를 찾을 수 없습니다." });
+    }
+
+    res.status(200).json({
+      foundManagmentDeatil: foundManagmentDeatil,
+      file: `http://localhost:8000/${foundManagmentDeatil.portfilo}`, // 파일 URL 반환
+    });
+
+  } catch (error) {
+    console.error("팀 지원 상세 페이지 오류 :", error);
+    res.status(500).json({ message: "서버 에러" });
+  }
+}
+
+const requestStatusApprove = async (req, res) => {
+  try {
+    //지원한 유저 아이디
+    const { userId, teamId, status, isApplyStatus, applyStatus } = req.body; 
+    console.log("req.body", req.body)
+    
+    if(!userId) {
+      return res.status(400).json({ message : "userId가 제공되지 않았습니다."})
+    }
+
+    // 지원한 유저
+    const user = await TeamApply.findOne({ applyId : userId, teamId : teamId })
+      .populate("teamId")
+      .populate("applyId")
+      .lean();
+    console.log("팀 지원한 유저 정보:", user)
+
+    if(!user){
+      return res.status(400).json({ message : "유저를 찾을 수 없습니다."})
+    }
+
+    await TeamApply.updateOne(
+      { _id: user._id },
+      {
+        isApplyStatus : isApplyStatus,
+        applyStatus : applyStatus
+      }
+    )
+
+    await TeamMatching.updateOne(
+      { _id : user.teamId._id },
+      {
+        $addToSet: { members: user.applyId._id },
+        $set: { status: status }
+      }
+    )
+
+    await TeamMembers.create({
+      teamId : user.teamId._id,
+      userId : user.applyId,
+      applyId : user._id
+    })
+
+    res.status(200).json({
+      message : "팀 지원 멤버를 승인하였습니다.",
+      user : user
+    })
+
+  } catch (error) {
+    console.error("팀 지원 멤버 승인 중 오류가 발생했습니다.", error)
+    res.status(500).json({ message : "서버 오류"})
+  }
+}
+
+const requestStatusReject = async (req, res) => {
+
+}
+
+export { getMyTeamMatching, getMyLesson, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject }
 
 
 

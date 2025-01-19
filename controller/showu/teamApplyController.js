@@ -12,6 +12,10 @@ const applyCreate = async (req, res) => {
   const foundTeam = await TeamMatching.findOne({ _id : id }).lean();
   const foundUpgrade = await Upgrade.findOne({ exportName : userId }).lean();
 
+  if(!foundUpgrade){
+    return res.status(400).json({ message : "이미 팀 지원을 했습니다. 한번만 가능합니다" })
+  }
+
   // console.log("foundUser", foundUser)
   console.log("foundTeam", foundTeam)
   console.log("foundUpgrade", foundUpgrade)
