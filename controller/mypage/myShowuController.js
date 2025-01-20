@@ -133,6 +133,7 @@ const getTeamMatchingManagment = async (req, res) => {
     const managmentList = await TeamApply.find({ teamId : teamId })
       .populate("teamId")
       .populate("applyId")
+      .populate("upgradeId")
       .lean();
     console.log("managmentList", managmentList)
 
@@ -157,6 +158,7 @@ const getManagmentDetail = async (req, res) => {
     const foundManagmentDeatil = await TeamApply.findById(id)
       .populate("teamId")
       .populate("applyId")
+      .populate("upgradeId")
       .lean();
     console.log("foundManagmentDetail", foundManagmentDeatil)
 

@@ -35,6 +35,7 @@ const applyCreate = async (req, res) => {
   const createApply = await TeamApply.create({
     teamId : id,
     applyId : userId,
+    upgradeId : foundUpgrade._id,
     teamName : foundTeam.teamName,
     intro : intro,
     career : foundUpgrade.career,
