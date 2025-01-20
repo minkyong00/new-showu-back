@@ -1,6 +1,7 @@
 import TeamMatching from "../../models/showu/teamMatchingSchema.js";
 import User from "../../models/users/userSchema.js";
 import path from 'path';
+import fs from 'fs';
 
 const getTeamList = async (req, res) => {
     try {
@@ -127,4 +128,24 @@ const teamCreate = async (req, res) => {
     // })
 }
 
-export { getTeamList, getTeamDetail, teamCreate }
+// 팀 공고 상세 페이지 포트폴리오 다운로드
+const teamPortfiloDownLoad = async (req, res) => {
+    const fileName = req.params.fileName;
+    console.log("요청된 파일명 : ", fileName)
+    const filePath = path.resolve('uploads', 'showu', 'create', fileName);
+    console.log("파일 경로", filePath)
+
+    if(!fs.existsSync(filePath)){
+        return res.status(404).send("파일을 찾을 수 없습니다.")
+    }
+
+    res.download(filePath, fileName, (err) => {
+        if(err){
+            console.log("파일 다운로드 에러: ", err)
+            res.status(500).send("파일 다운로드 실패")
+        }
+    })
+
+}
+
+export { getTeamList, getTeamDetail, teamCreate, teamPortfiloDownLoad }

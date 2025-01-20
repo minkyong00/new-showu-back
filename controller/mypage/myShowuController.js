@@ -4,6 +4,8 @@ import TeamApply from "../../models/showu/teamApplySchema.js";
 import TeamMatching from "../../models/showu/teamMatchingSchema.js";
 import TeamMembers from "../../models/showu/teamMembersSchema.js";
 import Team from "../../models/showu/teamSchema.js";
+import fs from 'fs';
+import path from "path";
 
 const getMyTeamMatching = async (req, res) => {
   const userId = req.user._id;
@@ -285,7 +287,26 @@ const requestStatusReject = async (req, res) => {
   }
 }
 
-export { getMyTeamMatching, getMyLesson, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject }
+// 마이페이지 팀 지원 상세페이지 파일 다운로드
+const applyFileDownload = async (req, res) => {
+  const fileName = req.params.fileName;
+  console.log('요청된 파일명:', fileName);
+  const filePath = path.resolve('uploads', 'showu', 'apply', fileName);
+  console.log('파일 경로:', filePath);
+
+  if(!fs.existsSync(filePath)) {
+    return res.status(404).send('파일을 찾을 수 없습니다.')
+  }
+
+  res.download(filePath, fileName, (err) => {
+    if(err) {
+      console.log("파일 다운로드 에러: ", err)
+      res.status(500).send("파일 다운로드 실패")
+    }
+  })
+}
+
+export { getMyTeamMatching, getMyLesson, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject, applyFileDownload }
 
 
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { getMyLesson, getMyTeamMatching, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject,  } from '../../controller/mypage/myShowuController.js';
+import { getMyLesson, getMyTeamMatching, getlessonreservation, getTeamMatchingManagment, getManagmentDetail, requestStatusApprove, requestStatusReject, applyFileDownload } from '../../controller/mypage/myShowuController.js';
 
 const myShowuRouter = express.Router()
 
@@ -24,5 +24,8 @@ myShowuRouter.put("/request-status/approve", requestStatusApprove)
 
 // 팀원 거절 '/my/showu/request-status/reject'
 myShowuRouter.put('/request-status/reject', requestStatusReject)
+
+// 포트폴리오 다운 '/my/showu/download-file/:fileName'
+myShowuRouter.get('/download-file/:fileName', applyFileDownload)
 
 export default myShowuRouter

@@ -4,7 +4,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getTeamDetail, getTeamList, teamCreate } from '../../controller/showu/teamController.js';
+import { getTeamDetail, getTeamList, teamCreate, teamPortfiloDownLoad } from '../../controller/showu/teamController.js';
 import applyRouter from './applyRouter.js';
 
 
@@ -75,5 +75,8 @@ teamRouter.post("/create", passport.authenticate('jwt', { session : false }), Te
 
 // 팀 매칭 지원 라우터
 teamRouter.use("/apply", applyRouter)
+
+// 팀 매칭 상세 페이지 포트폴리오 다운로드 '/showu/team/down-file/:fileName'
+teamRouter.get("/down-file/:fileName", teamPortfiloDownLoad)
 
 export default teamRouter;
