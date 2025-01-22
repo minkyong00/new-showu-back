@@ -145,7 +145,91 @@ const teamPortfiloDownLoad = async (req, res) => {
             res.status(500).send("파일 다운로드 실패")
         }
     })
-
 }
 
-export { getTeamList, getTeamDetail, teamCreate, teamPortfiloDownLoad }
+// 팀 매칭 좋아요 추가
+const addTeamLike = async (req, res) => {
+    const userId = req.user._id;
+    const { teamId } = req.params;
+
+    console.log("userId:", userId);
+    console.log("teamId:", teamId);
+
+    try {
+        const foundUser = await User.findOne({ _id: userId });
+        if (!foundUser) {
+            return res.status(404).json({ message: "유저를 찾을 수 없습니다." });
+        }
+
+        const foundTeam = await TeamMatching.findOne({ _id: teamId });
+        if (!foundTeam) {
+            return res.status(404).json({ message: "팀을 찾을 수 없습니다." });
+        }
+
+        // 유저가 이미 좋아요를 눌렀는지 확인
+        const isAlreadyLiked = foundTeam.likedUsers.includes(userId);
+
+        if (isAlreadyLiked) {
+            // 좋아요 취소
+            foundTeam.likedUsers = foundTeam.likedUsers.filter(
+                (id) => id.toString() !== userId.toString()
+            );
+            foundTeam.likeCount -= 1;
+            await foundTeam.save();
+
+            return res.status(200).json({
+                addlikeSuccess: true,
+                message: "좋아요가 취소되었습니다.",
+                likeCount: foundTeam.likeCount,
+                liked: false,
+            });
+        }
+
+        // 좋아요 추가
+        foundTeam.likedUsers.push(userId);
+        foundTeam.likeCount += 1;
+        await foundTeam.save();
+
+        return res.status(200).json({
+            addlikeSuccess: true,
+            message: "좋아요가 추가되었습니다.",
+            likeCount: foundTeam.likeCount,
+            liked: true,
+        });
+    } catch (error) {
+        console.error("좋아요 처리 중 오류 발생:", error);
+        res.status(500).json({
+            addlikeSuccess: false,
+            message: "서버 오류로 인해 좋아요를 처리하지 못했습니다.",
+        });
+    }
+};
+
+// 좋아요 여부 확인
+const getTeamLike = async (req, res) => {
+    const { teamId } = req.params;
+    const userId = req.user._id;
+
+    try {
+        const team = await TeamMatching.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "팀을 찾을 수 없습니다." });
+        }
+
+        const liked = team.likedUsers.includes(userId);
+
+        res.status(200).json({
+            getLikeSuccess: true,
+            message: liked
+                ? "로그인한 유저가 이 팀을 찜했습니다."
+                : "로그인한 유저는 이 팀을 찜하지 않았습니다.",
+            liked: liked,
+        });
+    } catch (error) {
+        console.error("좋아요 여부 확인 중 오류 발생:", error);
+        res.status(500).json({ message: "서버 오류로 인해 좋아요 여부를 확인하지 못했습니다." });
+    }
+};
+
+
+export { getTeamList, getTeamDetail, teamCreate, teamPortfiloDownLoad, addTeamLike, getTeamLike }
