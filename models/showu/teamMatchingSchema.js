@@ -6,7 +6,7 @@ const teamMatchingSchema = new Schema({
     members : [{ type : Schema.Types.ObjectId, ref : 'User' }], // 팀원
     currentMemberCount : { type : Number, default : 0 },
     teamName: { type: String, required: true },
-    categoty : { type : String }, // 분야
+    category : { type : String }, // 분야
     teamTitle : { type : String },
     teamIntro : { type : String, required : true },
     file : { type : String }, //팀 포트폴리오,

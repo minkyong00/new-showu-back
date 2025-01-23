@@ -15,24 +15,33 @@ const getMyTeamMatching = async (req, res) => {
 
   try {
     // 로그인한 사용자와 일치하는 팀 매칭 정보 리스트
-    const teamList = await Team.find({ userId : userId })
+    const teamList = await TeamMatching.find({ teamLeader : userId })
     // console.log("팀 매칭 리스트 : ", teamList)
 
     // 마이페이지에 필요한 팀매칭 완료 정보
     const myCompletedTeamsList = await teamList.map((team) => ({
+      _id : team._id,
       teamName : team.teamName,
-      teamThumbnail : team.teamThumbnail,
+      teamProfile : team.teamProfile,
       status : team.status,
-      teamNotice : team.teamNotice
+      teamIntro : team.teamIntro,
+      category : team.category,
+      deadLine : team.deadLine,
+      careerHistory : team.careerHistory
+      
     }))
       .filter((item) => item.status === "매칭 완료")
 
     // 마이페이지에 필요한 팀매칭 완료 정보
     const myWaitingTeamsTeamList = await teamList.map((team) => ({
+      _id : team._id,
       teamName : team.teamName,
-      teamThumbnail : team.teamThumbnail,
+      teamProfile : team.teamProfile,
       status : team.status,
-      teamNotice : team.teamNotice
+      teamIntro : team.teamIntro,
+      category : team.category,
+      deadLine : team.deadLine,
+      careerHistory : team.careerHistory
     }))
       .filter((item) => item.status === "매칭 대기")
 
