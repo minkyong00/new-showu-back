@@ -212,6 +212,7 @@ const requestStatusApprove = async (req, res) => {
       { _id : user.teamId._id },
       {
         $addToSet: { members: user.applyId._id },
+        $inc: { currentMemberCount: 1 },
         // $set: { status: status }
       }
     )
@@ -265,8 +266,8 @@ const requestStatusReject = async (req, res) => {
     await TeamMatching.updateOne(
       { _id : user.teamId._id },
       {
-        $addToSet: { members: user.applyId._id },
-        // $set: { status: status }
+        $pull: { members: user.applyId._id },
+        $inc: { currentMemberCount: -1 },
       }
     )
 
